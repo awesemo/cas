@@ -125,8 +125,21 @@
 					| local authentication strategy.  You might accomplish this by coding a new such handler and declaring
 					| edu.someschool.its.cas.MySpecialHandler here, or you might use one of the handlers provided in the adaptors modules.
 					+-->
+				<!--
 				<bean 
 					class="org.jasig.cas.authentication.handler.support.SimpleTestUsernamePasswordAuthenticationHandler" />
+				-->
+				<bean class="org.jasig.cas.adaptors.jdbc.SearchModeSearchDatabaseAuthenticationHandler">
+					<property name="tableUsers"><value>users</value></property>
+					<property name="fieldUser"><value>username</value></property>
+					<property name="fieldPassword"><value>password</value></property>
+					<property name="passwordEncoder">
+						<bean class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder">
+						<constructor-arg value="MD5" />
+						</bean>
+					</property>
+					<property name="dataSource" ref="dataSource"/>
+				</bean>
 			</list>
 		</property>
 	</bean>
@@ -215,4 +228,14 @@
       </list>
     </property>
   </bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value>jdbc:mysql://localhost:3306/casdb?autoReconnect=true</value>
+		</property>
+		<property name="username"><value>root</value></property>
+		<property name="password"><value></value></property>
+	</bean>
 </beans>
